@@ -1,0 +1,28 @@
+{
+  "name": "nuxt-app",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "generate-api": "@openapitools/openapi-generator-cli generate -i openapi.yml -g typescript-fetch -o ./lib/api/__generated__",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "nuxt": "^3.11.1",
+    "vue": "^3.4.21",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^2.11.0",
+    "@openapitools/openapi-generator-cli": "^2.13.1",
+    "@vueuse/core": "^10.9.0",
+    "@vueuse/nuxt": "^10.9.0",
+    "eslint": "8.40.0",
+    "eslint-plugin-format": "^0.1.0",
+    "sass": "^1.72.0",
+    "typescript": "^5.4.3"
+  }
+}
