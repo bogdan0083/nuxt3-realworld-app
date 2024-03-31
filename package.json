@@ -11,7 +11,6 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "nuxt": "^3.11.1",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
@@ -20,8 +19,10 @@
     "@openapitools/openapi-generator-cli": "^2.13.1",
     "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
+    "consola": "^3.2.3",
     "eslint": "8.40.0",
     "eslint-plugin-format": "^0.1.0",
+    "nuxt": "^3.11.1",
     "sass": "^1.72.0",
     "typescript": "^5.4.3"
   }
