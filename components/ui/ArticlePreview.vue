@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import type { Article, Profile } from '~/lib/api/__generated__'
 
-interface Props extends Omit<Article, 'body' | 'updatedAt'> {
+interface Props extends Omit<Article, 'body' | 'updatedAt' | 'createdAt'> {
+  createdAt: string
 }
 const props = defineProps<Props>()
 
 defineEmits(['favoriteClick'])
-const authorLink = computed(() => `/author/${props.author.username}`)
+const authorLink = computed(() => `/profile/${props.author.username}`)
 const favoritesCountClass = computed(() => ({
-  'btn btn-outline-primary btn-sm pull-xs-right': true,
+  'btn btn-sm pull-xs-right': true,
   'btn-primary': props.favorited,
+  'btn-outline-primary': !props.favorited,
 }))
 
 const formattedDate = computed(() => {

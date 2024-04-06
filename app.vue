@@ -1,7 +1,15 @@
 <script setup>
+import { pageTitle } from '~/lib/utils'
+
 useHead({
-  title: 'Conduit',
+  title: pageTitle('Home'),
   link: [
+    // add favicon
+    {
+      rel: 'icon',
+      type: 'image/x-icon',
+      href: '/favicon.ico',
+    },
     {
       href: '//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css',
       rel: 'stylesheet',

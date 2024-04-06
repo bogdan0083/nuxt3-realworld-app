@@ -1,3 +1,5 @@
+import process from 'node:process'
+
 const silenceSomeSassDeprecationWarnings = {
   verbose: true,
   logger: {

@@ -1,14 +1,16 @@
 {
-  "name": "nuxt-app",
+  "name": "nuxt3-realworld-app",
   "type": "module",
   "private": true,
+  "description": "Nuxt 3 RealWorld example app",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "generate-api": "@openapitools/openapi-generator-cli generate -i openapi.yml -g typescript-fetch -o ./lib/api/__generated__",
+    "generate-api": "npx openapi-generator-cli generate  --generator-key V2.0",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "setup-git-hooks": "simple-git-hooks"
   },
   "dependencies": {
     "vue": "^3.4.21",
@@ -22,8 +24,16 @@
     "consola": "^3.2.3",
     "eslint": "8.40.0",
     "eslint-plugin-format": "^0.1.0",
+    "lint-staged": "^15.2.2",
     "nuxt": "^3.11.1",
     "sass": "^1.72.0",
+    "simple-git-hooks": "^2.11.1",
     "typescript": "^5.4.3"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx nuxi typecheck && npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,ts,vue}": "npx eslint --fix"
   }
 }
