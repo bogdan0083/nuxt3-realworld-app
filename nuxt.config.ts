@@ -39,7 +39,7 @@ export default defineNuxtConfig({
   alias: {
     '@generated-api': '/<srcDir>/lib/api/__generated__',
   },
-  modules: ['@vueuse/nuxt'],
+  modules: ['@vueuse/nuxt', '@nuxt/test-utils/module'],
   vite: {
     css: {
       preprocessorOptions: {
