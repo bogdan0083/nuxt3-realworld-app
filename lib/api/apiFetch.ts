@@ -1,8 +1,8 @@
-export const apiFetch = $fetch.create({
-  baseURL: 'https://api.realworld.io/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+import { type FetchOptions, createFetch } from 'ofetch'
+import { BASE_API_URL } from '../constants'
+
+const defaults = {
+  baseURL: BASE_API_URL,
   async onRequest({ options }) {
     const token = useCookie('token').value
 
@@ -12,4 +12,6 @@ export const apiFetch = $fetch.create({
     if (token)
       (options.headers as Record<string, string>).Authorization = `Token ${token}`
   },
-})
+} as FetchOptions
+
+export const apiFetch = $fetch.create({ ...defaults })
