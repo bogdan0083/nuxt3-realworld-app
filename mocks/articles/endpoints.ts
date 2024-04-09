@@ -1,5 +1,5 @@
 import { registerEndpoint } from '@nuxt/test-utils/runtime'
-import { getQuery } from 'h3'
+import { getQuery, getRouterParams } from 'h3'
 import { generateArticles } from './generator'
 import type { Article, GetArticlesRequest } from '~/lib/api/__generated__'
 import { ARTICLES_PER_PAGE, BASE_API_URL } from '~/lib/constants'
@@ -7,6 +7,25 @@ import { ARTICLES_PER_PAGE, BASE_API_URL } from '~/lib/constants'
 const articles = generateArticles(22)
 
 export function registerArticlesEndpoints() {
+  // @TODO: Couldn't find a way to make /articles/:slug work
+  // hardcoding the slug for now
+  registerEndpoint(`${BASE_API_URL}/articles/slug-1`, () => {
+    const slug = 'slug-1'
+
+    const article = articles.find(a => a.slug === slug)
+    if (!article)
+      return { errors: { body: ['Not found'] } }
+
+    return { article }
+  })
+
+  registerEndpoint(`${BASE_API_URL}/articles/feed`, () => {
+    return {
+      articles: articles.slice(10, 16),
+      articlesCount: 2,
+    }
+  })
+
   registerEndpoint(`${BASE_API_URL}/articles`, (event) => {
     const query = getQuery<GetArticlesRequest>(event)
     const queryLimit = query.limit || ARTICLES_PER_PAGE

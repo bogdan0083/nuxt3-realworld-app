@@ -4,14 +4,16 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import { fireEvent } from '@testing-library/vue'
 import { flushPromises } from '@vue/test-utils'
-import { wait } from '../utils'
+import { login, wait } from '../utils'
 import App from '~/app.vue'
 import { registerArticlesEndpoints } from '~/mocks/articles/endpoints'
 import { registerTagsEndpoints } from '~/mocks/tags/endpoints'
+import { registerAuthEndpoints } from '~/mocks/auth/endpoints'
 
 describe('articles', async () => {
   registerArticlesEndpoints()
   registerTagsEndpoints()
+  registerAuthEndpoints()
 
   describe('unauthenticated', () => {
     it('should display list of articles', async () => {
@@ -60,6 +62,35 @@ describe('articles', async () => {
 
       const articles = await wrapper.findAll('.article-preview')
       expect(articles).toHaveLength(1)
+    })
+    it('should render article page', async () => {
+      const wrapper = await mountSuspended(App, { route: '/article/slug-1' })
+
+      await flushPromises()
+
+      expect(wrapper.find('.article-page').exists()).toBe(true)
+      expect(wrapper.find('.banner h1').text()).toContain('title-1')
+      expect(wrapper.find('.article-content').text()).toContain('description-1')
+      expect(wrapper.find('.article-content').text()).toContain('body-1')
+      expect(wrapper.find('.article-content .tag-list').text()).toContain('tag-1')
+    })
+  })
+  describe('authenticated', () => {
+    it('should have my feed tab with articles', async () => {
+      const wrapper = await mountSuspended(App, { route: '/login' })
+      await login(wrapper)
+      const feedTabs = await wrapper.findAll('.feed-toggle .nav-link')
+
+      expect(feedTabs).toHaveLength(2)
+
+      // when we logged in we are on "your feed" feed by default and have 6 articles
+      expect(await wrapper.findAll('.article-preview')).toHaveLength(6)
+
+      await fireEvent.click(feedTabs[1].element)
+      await wait(100)
+
+      // now we on the global feed and should have 10 articles
+      expect(await wrapper.findAll('.article-preview')).toHaveLength(10)
     })
   })
 })
