@@ -47,6 +47,7 @@ const followButtonClasses = computed(() => ({
   'btn-secondary': data.value?.article.author.following,
 }))
 
+// @TODO: abstract this into a reusable composable
 async function onFollowClick() {
   if (data.value) {
     const { article: { author: { following } } } = data.value

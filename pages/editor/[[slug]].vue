@@ -82,7 +82,7 @@ async function onPublishArticle() {
     router.push(`/article/${response.article.slug}`)
   }
   catch (e) {
-    error.value = e as NuxtErrorWithRecord
+    publishError.value = e as NuxtErrorWithRecord
   }
   finally {
     isPublishing.value = false
@@ -100,7 +100,10 @@ async function onPublishArticle() {
               {{ key }} {{ v.join(', ') }}
             </li>
           </ul>
-          <div v-else-if="isLoading" class="text-xs-center">
+          <div v-if="error" class="text-xs-center">
+            An error occurred: {{ error.message }}
+          </div>
+          <div v-if="isLoading" class="text-xs-center">
             Loading...
           </div>
           <form v-else-if="!slug || data?.article" @submit.prevent="onPublishArticle">
