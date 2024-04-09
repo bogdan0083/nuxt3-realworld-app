@@ -64,7 +64,7 @@ async function onSubmit(e: Event) {
           </ul>
           <form autocomplete="on" @submit="onSubmit">
             <fieldset class="form-group">
-              <input v-model="email" name="email" class="form-control form-control-lg" type="text" placeholder="Email">
+              <input v-model="email" name="email" class="form-control form-control-lg" type="email" placeholder="Email">
             </fieldset>
             <fieldset class="form-group">
               <input
