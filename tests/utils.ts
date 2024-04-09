@@ -5,6 +5,9 @@ import { flushPromises } from '@vue/test-utils'
 export const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export async function login(wrapper: ReturnType<typeof mountSuspended>) {
+  const nuxtApp = useNuxtApp()
+  await nuxtApp.$router.push('/login')
+  await wait(100)
   const form = await wrapper.find('form')
   const emailInput = await wrapper.find('input[type="email"]')
   const passwordInput = await wrapper.find('input[type="password"]')

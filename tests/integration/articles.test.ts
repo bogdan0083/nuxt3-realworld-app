@@ -1,7 +1,7 @@
 // @vitest-environment nuxt
 // ~/tests/e2e/articles.test.ts
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
 import { fireEvent } from '@testing-library/vue'
 import { flushPromises } from '@vue/test-utils'
 import { login, wait } from '../utils'
@@ -10,6 +10,7 @@ import { registerArticlesEndpoints } from '~/mocks/articles/endpoints'
 import { registerTagsEndpoints } from '~/mocks/tags/endpoints'
 import { registerAuthEndpoints } from '~/mocks/auth/endpoints'
 
+// @TODO: logout user on afterEach
 describe('articles', async () => {
   registerArticlesEndpoints()
   registerTagsEndpoints()
@@ -74,11 +75,23 @@ describe('articles', async () => {
       expect(wrapper.find('.article-content').text()).toContain('body-1')
       expect(wrapper.find('.article-content .tag-list').text()).toContain('tag-1')
     })
+    it('should redirect on login page when editor page is accessed', async () => {
+      const _ = await mountSuspended(App, { route: '/editor' })
+
+      await flushPromises()
+      const nuxtApp = useNuxtApp()
+      const currentRoutePath = nuxtApp.$router.currentRoute.value.path
+
+      expect(currentRoutePath).toBe('/login')
+    })
   })
   describe('authenticated', () => {
-    it('should have my feed tab with articles', async () => {
-      const wrapper = await mountSuspended(App, { route: '/login' })
+    let wrapper: ReturnType<typeof mountSuspended>
+    beforeAll(async () => {
+      wrapper = await mountSuspended(App, { route: '/login' })
       await login(wrapper)
+    })
+    it('should have my feed tab with articles', async () => {
       const feedTabs = await wrapper.findAll('.feed-toggle .nav-link')
 
       expect(feedTabs).toHaveLength(2)
@@ -91,6 +104,44 @@ describe('articles', async () => {
 
       // now we on the global feed and should have 10 articles
       expect(await wrapper.findAll('.article-preview')).toHaveLength(10)
+    })
+
+    it('should create article', async () => {
+      const nuxtApp = useNuxtApp()
+      await nuxtApp.$router.push('/editor')
+
+      await wait(100)
+      const currentRoutePath = nuxtApp.$router.currentRoute.value.path
+
+      expect(currentRoutePath).toBe('/editor')
+
+      // console.log(wrapper.html())
+      const form = await wrapper.find('form')
+      const titleInput = await wrapper.find('input[name="title"]')
+      const descriptionInput = await wrapper.find('input[name="description"]')
+      const bodyInput = await wrapper.find('textarea[name="body"]')
+      const tagInput = await wrapper.find('input[name="tags"]')
+
+      await fireEvent.submit(form.element)
+      await wait(100)
+
+      expect(wrapper.html()).toContain('title can\'t be blank')
+
+      await titleInput.setValue('new-article-title')
+      await descriptionInput.setValue('new article description')
+      await bodyInput.setValue('new article body')
+      await tagInput.setValue('some-tag')
+      await fireEvent.keyDown(tagInput.element, { key: 'Enter' })
+
+      await fireEvent.submit(form.element)
+      await wait(100)
+
+      expect(nuxtApp.$router.currentRoute.value.path).toBe('/article/new-article-title')
+      expect(wrapper.find('.article-page').exists()).toBe(true)
+      expect(wrapper.find('.banner').text()).toContain('myAwesomeLogin')
+      expect(wrapper.find('.banner h1').text()).toContain('new-article-title')
+      expect(wrapper.find('.article-content').text()).toContain('new article description')
+      expect(wrapper.find('.article-content').text()).toContain('new article body')
     })
   })
 })

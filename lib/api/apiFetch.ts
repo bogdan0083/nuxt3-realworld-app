@@ -1,4 +1,4 @@
-import { type FetchOptions, createFetch } from 'ofetch'
+import type { FetchOptions } from 'ofetch'
 import { BASE_API_URL } from '../constants'
 
 const defaults = {

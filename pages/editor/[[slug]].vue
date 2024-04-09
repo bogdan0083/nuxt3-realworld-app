@@ -110,7 +110,7 @@ async function onPublishArticle() {
             <fieldset>
               <fieldset class="form-group">
                 <input
-                  v-model="articleTitle" type="text" name="articleTitle" class="form-control form-control-lg"
+                  v-model="articleTitle" type="text" name="title" class="form-control form-control-lg"
                   placeholder="Article Title"
                 >
               </fieldset>

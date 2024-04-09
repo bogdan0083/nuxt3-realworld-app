@@ -1,6 +1,6 @@
 import type { Article } from '~/lib/api/__generated__'
 
-type ArticleWithStringDates = Omit<Article, 'createdAt' | 'updatedAt'> & {
+export type ArticleWithStringDates = Omit<Article, 'createdAt' | 'updatedAt'> & {
   createdAt: string
   updatedAt: string
 }
