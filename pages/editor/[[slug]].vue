@@ -8,7 +8,6 @@ definePageMeta({
   middleware: 'auth',
 })
 
-const router = useRouter()
 const { params: { slug } } = useRoute()
 const articleTitle = ref('')
 const articleDescription = ref('')
@@ -79,7 +78,7 @@ async function onPublishArticle() {
       method: slug ? 'PUT' : 'POST',
       body: { article },
     })
-    router.push(`/article/${response.article.slug}`)
+    await navigateTo(`/article/${response.article.slug}`)
   }
   catch (e) {
     publishError.value = e as NuxtErrorWithRecord

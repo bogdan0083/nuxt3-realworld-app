@@ -18,8 +18,6 @@ export function registerArticlesEndpoints() {
         throw createError({ status: 422, data: { errors: { description: ['can\'t be blank'] } } })
       if (!body.article?.body)
         throw createError({ status: 422, data: { errors: { body: ['can\'t be blank'] } } })
-      //   if (!body.article.tagList)
-      //     throw createError({ status: 422, data: { errors: { tagList: ['can\'t be blank'] } } })
 
       const article = {
         title: body.article.title,
@@ -45,10 +43,65 @@ export function registerArticlesEndpoints() {
     },
   })
 
+  registerEndpoint(`${BASE_API_URL}/articles/new-article-title`, {
+    method: 'PUT',
+    handler: async (event) => {
+      const body = await readBody<CreateArticleRequest>(event)
+
+      if (!body.article?.title)
+        throw createError({ status: 422, data: { errors: { title: ['can\'t be blank'] } } })
+      if (!body.article?.description)
+        throw createError({ status: 422, data: { errors: { description: ['can\'t be blank'] } } })
+      if (!body.article?.body)
+        throw createError({ status: 422, data: { errors: { body: ['can\'t be blank'] } } })
+
+      const article = {
+        title: body.article.title,
+        description: body.article.description,
+        body: body.article.body,
+        tagList: body.article.tagList || [],
+        slug: `${body.article.title}`,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        favorited: false,
+        favoritesCount: 0,
+        author: {
+          username: 'myAwesomeLogin',
+          bio: '',
+          image: 'image',
+          email: 'email@gmail.com',
+          following: false,
+        },
+      } as ArticleWithStringDates
+
+      const existingArticleIndex = articles.findIndex(a => a.slug === 'new-article-title')
+      if (existingArticleIndex === -1)
+        throw createError({ status: 422, data: { errors: { body: ['Not found'] } } })
+
+      articles[existingArticleIndex] = article
+      return { article }
+    },
+  })
+
+  // registerEndpoint(`${BASE_API_URL}/articles/slug-1`, {
+  //   method: 'POST',
+  // })
+
   // @TODO: Couldn't find a way to make /articles/:slug work
   // hardcoding the slug for now
   registerEndpoint(`${BASE_API_URL}/articles/slug-1`, () => {
     const slug = 'slug-1'
+
+    const article = articles.find(a => a.slug === slug)
+    if (!article)
+      return { errors: { body: ['Not found'] } }
+
+    return { article }
+  })
+  // @TODO: Couldn't find a way to make /articles/:slug work
+  // hardcoding the slug for now
+  registerEndpoint(`${BASE_API_URL}/articles/updated-article-title`, () => {
+    const slug = 'updated-article-title'
 
     const article = articles.find(a => a.slug === slug)
     if (!article)
