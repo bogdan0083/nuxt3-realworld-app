@@ -24,7 +24,7 @@ npm install && npm run setup-git-hooks && npm run dev
 
 ## TODOs
 
-- Add unit and e2e tests
 - Refactor api calls into composables
 - Describe the general architecture of the app
 - Add a visual feedback to all errors
+- Add unit and e2e tests
