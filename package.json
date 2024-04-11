@@ -33,6 +33,7 @@
     "lint-staged": "^15.2.2",
     "msw": "^2.2.13",
     "nuxt": "^3.11.1",
+    "organize-imports-cli": "^0.10.0",
     "playwright-core": "^1.43.0",
     "sass": "^1.72.0",
     "simple-git-hooks": "^2.11.1",
@@ -43,6 +44,7 @@
     "pre-commit": "npx nuxi typecheck && npx lint-staged"
   },
   "lint-staged": {
+    "*.ts": "organize-imports-cli",
     "*.{js,ts,vue}": "npx eslint --fix"
   },
   "msw": {
