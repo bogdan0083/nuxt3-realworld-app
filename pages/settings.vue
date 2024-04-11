@@ -2,6 +2,10 @@
 import type { CreateUserOperationRequest, Login200Response } from '~/lib/api/__generated__'
 import { apiFetch } from '~/lib/api/apiFetch'
 
+definePageMeta({
+  middleware: 'auth',
+})
+
 const user = useCurrentUser()
 const isSubmitting = ref(false)
 const submitError = ref(null) as Ref<Error | null>
