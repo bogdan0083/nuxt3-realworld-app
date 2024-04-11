@@ -72,7 +72,7 @@ async function onSubmit(e: Event) {
                 placeholder="Password"
               >
             </fieldset><button type="submit" class="btn btn-lg btn-primary pull-xs-right" :disabled="isLoading">
-              {{ isLoading ? 'Loading...' : 'Sign up' }}
+              {{ isLoading ? 'Loading...' : 'Sign in' }}
             </button>
           </form>
         </div>
