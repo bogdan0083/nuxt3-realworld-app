@@ -1,7 +1,7 @@
 import { registerEndpoint } from '@nuxt/test-utils/runtime'
 import { createError, readBody } from 'h3'
-import type { Article, GetArticlesRequest, Login200Response, LoginUser, User } from '~/lib/api/__generated__'
-import { ARTICLES_PER_PAGE, BASE_API_URL } from '~/lib/constants'
+import type { LoginUser, User } from '~/lib/api/__generated__'
+import { BASE_API_URL } from '~/lib/constants'
 
 export function registerAuthEndpoints() {
   registerEndpoint(`${BASE_API_URL}/users/login`, ({

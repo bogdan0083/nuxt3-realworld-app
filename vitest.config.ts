@@ -1,6 +1,4 @@
-import { defineVitestConfig,
-} from '@nuxt/test-utils/config'
-import { BASE_API_URL } from './lib/constants'
+import { defineVitestConfig } from '@nuxt/test-utils/config'
 
 export default defineVitestConfig ({
   test: {

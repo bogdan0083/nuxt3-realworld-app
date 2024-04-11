@@ -1,8 +1,8 @@
 import { registerEndpoint } from '@nuxt/test-utils/runtime'
-import { getQuery, getRouterParams, readBody } from 'h3'
+import { readBody } from 'h3'
 import { testArticles } from '../articles/endpoints'
-import type { Article, CreateArticleRequest, CreateUserRequest, GetArticlesRequest, GetProfileByUsername200Response, Login200Response, UpdateCurrentUserRequest, User } from '~/lib/api/__generated__'
-import { ARTICLES_PER_PAGE, BASE_API_URL } from '~/lib/constants'
+import type { GetProfileByUsername200Response, UpdateCurrentUserRequest } from '~/lib/api/__generated__'
+import { BASE_API_URL } from '~/lib/constants'
 
 export const testCurrentUser = {
   email: 'email@gmail.com',

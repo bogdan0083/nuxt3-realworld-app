@@ -1,7 +1,6 @@
 // @vitest-environment nuxt
 // ~/tests/e2e/articles.test.ts
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { fireEvent } from '@testing-library/vue'
 import { flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { login, logout, wait } from '../utils'

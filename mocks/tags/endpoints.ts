@@ -1,5 +1,4 @@
 import { registerEndpoint } from '@nuxt/test-utils/runtime'
-import { type GetTags200Response, TagsApi } from '~/lib/api/__generated__'
 import { BASE_API_URL } from '~/lib/constants'
 
 export function registerTagsEndpoints() {
