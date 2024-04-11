@@ -17,8 +17,41 @@ const isMyProfile = computed(() => {
   return user.value && authorData?.value?.profile && user.value.username === authorData.value.profile.username
 })
 
+const isFollowing = computed(() => {
+  return user.value && authorData?.value?.profile && authorData?.value?.profile.following
+})
+
 const profileLink = computed(() => `/profile/${username}`)
 const profileFavoritesLink = computed(() => `/profile/${username}/favorites`)
+
+const followButtonClasses = computed(() => ({
+  'btn btn-sm action-btn': true,
+  'btn-outline-secondary': !isFollowing.value,
+  'btn-secondary': isFollowing.value,
+}))
+
+// @TODO: abstract this into a reusable composable
+async function onFollowClick() {
+  if (!user.value) {
+    await navigateTo('/login')
+    return
+  }
+  if (authorData.value) {
+    const profile = authorData.value.profile
+    const encodedUsername = encodeURIComponent(profile.username)
+
+    try {
+      const previousFollowing = authorData.value.profile.following
+      authorData.value.profile.following = !authorData.value.profile.following
+      await apiFetch(`/profiles/${encodedUsername}/follow`, {
+        method: previousFollowing ? 'DELETE' : 'POST',
+      })
+    }
+    catch (error) {
+      authorData.value.profile.following = !authorData.value.profile.following
+    }
+  }
+}
 </script>
 
 <template>
@@ -40,6 +73,9 @@ const profileFavoritesLink = computed(() => `/profile/${username}/favorites`)
               <NuxtLink v-if="isMyProfile" class="btn btn-sm btn-outline-secondary action-btn" to="/settings">
                 <i class="ion-gear-a" /> Edit Profile Settings
               </NuxtLink>
+              <button v-if="!isMyProfile" :class="followButtonClasses" @click.prevent="onFollowClick">
+                <i class="ion-plus-round" />&nbsp; {{ isFollowing ? 'Unfollow' : 'Follow' }} {{ authorData.profile.username }}
+              </button>
             </template>
           </div>
         </div>
