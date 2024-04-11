@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Article, Profile } from '~/lib/api/__generated__'
+import type { Article } from '~/lib/api/__generated__'
 
 interface Props extends Omit<Article, 'body' | 'updatedAt' | 'createdAt'> {
   createdAt: string
