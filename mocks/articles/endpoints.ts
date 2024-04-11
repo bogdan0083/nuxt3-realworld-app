@@ -4,7 +4,7 @@ import { type ArticleWithStringDates, generateArticles } from './generator'
 import type { CreateArticleRequest, GetArticlesRequest } from '~/lib/api/__generated__'
 import { ARTICLES_PER_PAGE, BASE_API_URL } from '~/lib/constants'
 
-const articles = generateArticles(22)
+export const testArticles = generateArticles(22)
 
 export function registerArticlesEndpoints() {
   // @TODO: Couldn't find a way to make /articles/:slug/favorite work
@@ -13,13 +13,13 @@ export function registerArticlesEndpoints() {
     method: 'POST',
     handler: async () => {
       // set favorite to true
-      const articleIndex = articles.findIndex(a => a.slug === 'slug-5')
+      const articleIndex = testArticles.findIndex(a => a.slug === 'slug-5')
       if (articleIndex === -1)
         throw createError({ status: 404, data: { errors: { body: ['Not found'] } } })
 
-      articles[articleIndex].favorited = true
-      articles[articleIndex].favoritesCount += 1
-      return { article: articles[articleIndex] }
+      testArticles[articleIndex].favorited = true
+      testArticles[articleIndex].favoritesCount += 1
+      return { article: testArticles[articleIndex] }
     },
   })
 
@@ -29,7 +29,7 @@ export function registerArticlesEndpoints() {
     method: 'DELETE',
     handler: async () => {
       // set favorite to true
-      const article = articles.find(a => a.slug === 'slug-5')
+      const article = testArticles.find(a => a.slug === 'slug-5')
       if (!article)
         throw createError({ status: 404, data: { errors: { body: ['Not found'] } } })
 
@@ -37,8 +37,9 @@ export function registerArticlesEndpoints() {
     },
   })
   registerEndpoint(`${BASE_API_URL}/articles/feed`, () => {
+    const hasFollowingAuthors = testArticles.some(a => a.author.following)
     return {
-      articles: articles.slice(10, 16),
+      articles: hasFollowingAuthors ? testArticles.filter(a => a.author.following) : testArticles.slice(10, 16),
       articlesCount: 6,
     }
   })
@@ -74,7 +75,7 @@ export function registerArticlesEndpoints() {
         },
       } as ArticleWithStringDates
 
-      articles.push(article)
+      testArticles.push(article)
       return { article }
     },
   })
@@ -110,11 +111,11 @@ export function registerArticlesEndpoints() {
         },
       } as ArticleWithStringDates
 
-      const existingArticleIndex = articles.findIndex(a => a.slug === 'new-article-title')
+      const existingArticleIndex = testArticles.findIndex(a => a.slug === 'new-article-title')
       if (existingArticleIndex === -1)
         throw createError({ status: 422, data: { errors: { body: ['Not found'] } } })
 
-      articles[existingArticleIndex] = article
+      testArticles[existingArticleIndex] = article
       return { article }
     },
   })
@@ -124,7 +125,7 @@ export function registerArticlesEndpoints() {
   registerEndpoint(`${BASE_API_URL}/articles/slug-1`, () => {
     const slug = 'slug-1'
 
-    const article = articles.find(a => a.slug === slug)
+    const article = testArticles.find(a => a.slug === slug)
     if (!article)
       return { errors: { body: ['Not found'] } }
 
@@ -135,7 +136,7 @@ export function registerArticlesEndpoints() {
   registerEndpoint(`${BASE_API_URL}/articles/updated-article-title`, () => {
     const slug = 'updated-article-title'
 
-    const article = articles.find(a => a.slug === slug)
+    const article = testArticles.find(a => a.slug === slug)
     if (!article)
       return { errors: { body: ['Not found'] } }
 
@@ -147,7 +148,7 @@ export function registerArticlesEndpoints() {
   registerEndpoint(`${BASE_API_URL}/articles/new-article-title`, () => {
     const slug = 'new-article-title'
 
-    const article = articles.find(a => a.slug === slug)
+    const article = testArticles.find(a => a.slug === slug)
     if (!article)
       return { errors: { body: ['Not found'] } }
 
@@ -158,7 +159,7 @@ export function registerArticlesEndpoints() {
     const query = getQuery<GetArticlesRequest>(event)
     const queryLimit = query.limit || ARTICLES_PER_PAGE
 
-    let slicedArticles = [...articles]
+    let slicedArticles = [...testArticles]
 
     if (query.tag) {
       const filterFunction = (article: any) => article.tagList.includes(query.tag as string)

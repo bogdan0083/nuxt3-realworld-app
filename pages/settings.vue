@@ -18,10 +18,11 @@ const { data, error, pending } = await useLazyAsyncData<CreateUserOperationReque
 async function onSubmit() {
   try {
     isSubmitting.value = true
-    await apiFetch(`/profiles/${user.value?.username}`, {
+    await apiFetch(`/user`, {
       method: 'PUT',
       body: data.value,
     })
+    await navigateTo(`/profile/${user.value?.username}`)
   }
   catch (e) {
     submitError.value = e as Error
@@ -52,12 +53,14 @@ async function onSubmit() {
               <fieldset class="form-group">
                 <input
                   v-model="data.user.image" class="form-control" type="text"
+                  name="image"
                   placeholder="URL of profile picture"
                 >
               </fieldset>
               <fieldset class="form-group">
                 <input
                   v-model="data.user.username" class="form-control form-control-lg" type="text"
+                  name="username"
                   placeholder="Your Name"
                 >
               </fieldset>
@@ -65,14 +68,15 @@ async function onSubmit() {
                 <textarea
                   v-model="data.user.bio" class="form-control form-control-lg"
                   rows="8"
+                  name="bio"
                   placeholder="Short bio about you"
                 />
               </fieldset>
               <fieldset class="form-group">
-                <input v-model="data.user.email" class="form-control form-control-lg" type="text" placeholder="Email">
+                <input v-model="data.user.email" name="email" class="form-control form-control-lg" type="text" placeholder="Email">
               </fieldset>
               <fieldset class="form-group">
-                <input v-model="data.user.password" class="form-control form-control-lg" type="password" placeholder="Password">
+                <input v-model="data.user.password" name="password" class="form-control form-control-lg" type="password" placeholder="Password">
               </fieldset><button type="submit" class="btn btn-lg btn-primary pull-xs-right" :disabled="isSubmitting">
                 {{ isSubmitting ? 'Updating...' : 'Update Settings' }}
               </button>

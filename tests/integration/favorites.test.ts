@@ -10,16 +10,14 @@ import { registerArticlesEndpoints } from '~/mocks/articles/endpoints'
 import { registerAuthEndpoints } from '~/mocks/auth/endpoints'
 import { registerTagsEndpoints } from '~/mocks/tags/endpoints'
 
+// @TODO: add tests to unfavorite articles
+// @TODO: add tests to check favoriting article page
 describe('favorites', async () => {
   registerArticlesEndpoints()
   registerTagsEndpoints()
   registerAuthEndpoints()
 
   describe('unauthenticated', () => {
-    beforeEach(async () => {
-      await logout()
-      await wait(100)
-    })
     it('should redirect on login page', async () => {
       const wrapper = await mountSuspended(App, { route: '/' })
       await flushPromises()
@@ -37,6 +35,10 @@ describe('favorites', async () => {
     })
   })
   describe('authenticated', () => {
+    beforeEach(async () => {
+      await logout()
+      await wait(100)
+    })
     it('should favorite/unfavorite an article', async () => {
       const wrapper = await mountSuspended(App, { route: '/' })
       await login(wrapper)
