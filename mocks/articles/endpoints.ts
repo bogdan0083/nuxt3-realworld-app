@@ -1,12 +1,48 @@
 import { registerEndpoint } from '@nuxt/test-utils/runtime'
-import { getQuery, getRouterParams, readBody } from 'h3'
+import { getQuery, readBody } from 'h3'
 import { type ArticleWithStringDates, generateArticles } from './generator'
-import type { Article, CreateArticleRequest, GetArticlesRequest } from '~/lib/api/__generated__'
+import type { CreateArticleRequest, GetArticlesRequest } from '~/lib/api/__generated__'
 import { ARTICLES_PER_PAGE, BASE_API_URL } from '~/lib/constants'
 
 const articles = generateArticles(22)
 
 export function registerArticlesEndpoints() {
+  // @TODO: Couldn't find a way to make /articles/:slug/favorite work
+  // hardcoding the slug for now
+  registerEndpoint(`${BASE_API_URL}/articles/slug-5/favorite`, {
+    method: 'POST',
+    handler: async () => {
+      // set favorite to true
+      const articleIndex = articles.findIndex(a => a.slug === 'slug-5')
+      if (articleIndex === -1)
+        throw createError({ status: 404, data: { errors: { body: ['Not found'] } } })
+
+      articles[articleIndex].favorited = true
+      articles[articleIndex].favoritesCount += 1
+      return { article: articles[articleIndex] }
+    },
+  })
+
+  // @TODO: Couldn't find a way to make /articles/:slug/favorite work
+  // hardcoding the slug for now
+  registerEndpoint(`${BASE_API_URL}/articles/slug-5/favorite`, {
+    method: 'DELETE',
+    handler: async () => {
+      // set favorite to true
+      const article = articles.find(a => a.slug === 'slug-5')
+      if (!article)
+        throw createError({ status: 404, data: { errors: { body: ['Not found'] } } })
+
+      article.favorited = false
+    },
+  })
+  registerEndpoint(`${BASE_API_URL}/articles/feed`, () => {
+    return {
+      articles: articles.slice(10, 16),
+      articlesCount: 6,
+    }
+  })
+
   registerEndpoint(`${BASE_API_URL}/articles`, {
     method: 'POST',
     handler: async (event) => {
@@ -83,10 +119,6 @@ export function registerArticlesEndpoints() {
     },
   })
 
-  // registerEndpoint(`${BASE_API_URL}/articles/slug-1`, {
-  //   method: 'POST',
-  // })
-
   // @TODO: Couldn't find a way to make /articles/:slug work
   // hardcoding the slug for now
   registerEndpoint(`${BASE_API_URL}/articles/slug-1`, () => {
@@ -122,13 +154,6 @@ export function registerArticlesEndpoints() {
     return { article }
   })
 
-  registerEndpoint(`${BASE_API_URL}/articles/feed`, () => {
-    return {
-      articles: articles.slice(10, 16),
-      articlesCount: 2,
-    }
-  })
-
   registerEndpoint(`${BASE_API_URL}/articles`, (event) => {
     const query = getQuery<GetArticlesRequest>(event)
     const queryLimit = query.limit || ARTICLES_PER_PAGE
@@ -142,6 +167,11 @@ export function registerArticlesEndpoints() {
 
     if (query.author) {
       const filterFunction = (article: any) => article.author.username === query.author
+      slicedArticles = slicedArticles.filter(filterFunction)
+    }
+
+    if (query.favorited) {
+      const filterFunction = (article: any) => article.favorited === true
       slicedArticles = slicedArticles.filter(filterFunction)
     }
 

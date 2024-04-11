@@ -15,6 +15,7 @@ export async function login(wrapper: ReturnType<typeof mountSuspended>) {
 
   await emailInput.setValue('email@gmail.com')
   await passwordInput.setValue('world')
+
   await fireEvent.submit(form.element)
   await wait(100)
 }
