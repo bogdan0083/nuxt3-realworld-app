@@ -21,20 +21,26 @@ describe('users', async () => {
 
   describe('unauthenticated', () => {
     it('shows user profile', async () => {
-      const wrapper = await mountSuspended(App, { route: '/profile/username-1' })
+      const wrapper = await mountSuspended(App, {
+        route: '/profile/username-1',
+      })
       await flushPromises()
       await wait(100)
       expect(wrapper.find('.user-info').text()).toContain('username-1')
     })
     it('displays `My Articles` and `Favorited Articles` tabs', async () => {
-      const wrapper = await mountSuspended(App, { route: '/profile/username-1' })
+      const wrapper = await mountSuspended(App, {
+        route: '/profile/username-1',
+      })
       await flushPromises()
       await wait(100)
       expect(wrapper.find('.nav-pills').text()).toContain('My Articles')
       expect(wrapper.find('.nav-pills').text()).toContain('Favorited Articles')
     })
     it('redirect user to login on `follow` click', async () => {
-      const wrapper = await mountSuspended(App, { route: '/profile/username-1' })
+      const wrapper = await mountSuspended(App, {
+        route: '/profile/username-1',
+      })
       await wait(100)
       const followButton = wrapper.find('.user-info button')
       await fireEvent.click(followButton.element)
@@ -57,16 +63,28 @@ describe('users', async () => {
     it('should display /settings link', async () => {
       const wrapper = await mountSuspended(App, { route: '/' })
       await login(wrapper)
-      await navigateTo({ path: '/profile/myAwesomeLogin', force: true, replace: true })
+      await navigateTo({
+        path: '/profile/myAwesomeLogin',
+        force: true,
+        replace: true,
+      })
       await wait(100)
       await flushPromises()
 
-      expect(wrapper.find('.user-info').text()).toContain('Edit Profile Settings')
+      expect(wrapper.find('.user-info').text()).toContain(
+        'Edit Profile Settings',
+      )
     })
     it('should follow user', async () => {
-      const wrapper = await mountSuspended(App, { route: '/profile/username-1' })
+      const wrapper = await mountSuspended(App, {
+        route: '/profile/username-1',
+      })
       await login(wrapper)
-      await navigateTo({ path: '/profile/username-1', force: true, replace: true })
+      await navigateTo({
+        path: '/profile/username-1',
+        force: true,
+        replace: true,
+      })
       await wait(100)
       await flushPromises()
 
@@ -87,8 +105,12 @@ describe('users', async () => {
       await navigateTo({ path: '/settings', force: true, replace: true })
       await wait(100)
       expect(wrapper.find('.settings-page').exists()).toBe(true)
-      expect((wrapper.find('[name="username"]').element as HTMLInputElement).value).toBe('myAwesomeLogin')
-      expect((wrapper.find('[name="email"]').element as HTMLInputElement).value).toBe('email@gmail.com')
+      expect(
+        (wrapper.find('[name="username"]').element as HTMLInputElement).value,
+      ).toBe('myAwesomeLogin')
+      expect(
+        (wrapper.find('[name="email"]').element as HTMLInputElement).value,
+      ).toBe('email@gmail.com')
     })
     it('updates bio in settings', async () => {
       const wrapper = await mountSuspended(App, { route: '/settings' })
@@ -103,7 +125,11 @@ describe('users', async () => {
       await fireEvent.submit(form.element)
       await wait(100)
       await flushPromises()
-      await navigateTo({ path: '/profile/myAwesomeLogin', force: true, replace: true })
+      await navigateTo({
+        path: '/profile/myAwesomeLogin',
+        force: true,
+        replace: true,
+      })
       await wait(100)
       await flushPromises()
       expect(wrapper.find('.user-info').text()).toContain('new bio')
