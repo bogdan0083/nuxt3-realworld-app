@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import type { NuxtError } from '#app'
-import type { Article, CreateArticle201Response, GetArticleRequest, GetArticlesFeed200Response, NewArticle } from '~/lib/api/__generated__'
-import { apiFetch } from '~/lib/api/apiFetch'
-import type { NuxtErrorWithRecord } from '~/lib/types'
+import type { NewArticle } from '~/lib/api/__generated__'
 
 definePageMeta({
   middleware: 'auth',

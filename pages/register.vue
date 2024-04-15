@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import type { CreateUserRequest, Login200Response, User } from '~/lib/api/__generated__'
-import { apiFetch } from '~/lib/api/apiFetch'
-import type { NuxtErrorWithRecord } from '~/lib/types'
+import type { User } from '~/lib/api/__generated__'
 
 definePageMeta({
   middleware: 'auth',
