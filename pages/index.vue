@@ -71,8 +71,8 @@ const { data: tagsData } = await useGetTagsApi()
             <p>Popular Tags</p>
             <div v-if="tagsData?.tags" class="tag-list">
               <a
-                v-for="tag in tagsData.tags" :key="tag" href="#" class="tag-pill tag-default"
-                @click="$router.replace({ query: { page: 1, tag } })"
+                v-for="t in tagsData.tags" :key="t" href="#" class="tag-pill tag-default"
+                @click="$router.replace({ query: { page: 1, tag: t } })"
               >{{ tag }}</a>
             </div>
           </div>
