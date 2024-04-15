@@ -6,13 +6,10 @@ import { ARTICLES_PER_PAGE } from '~/lib/constants'
 defineProps<{ user?: User }>()
 const route = useRoute()
 const currentPage = computed(() => Number.parseInt(route.query?.page as string) || 1)
-const opts = computed(() => ({
-  offset: (currentPage.value - 1) * ARTICLES_PER_PAGE,
-  favorited: route.params.username as string,
-  feed: false,
-}))
+const offset = computed(() => (currentPage.value - 1) * ARTICLES_PER_PAGE)
+const favorited = computed(() => route.params.username as string)
 
-const { data, pending, error } = await useArticlesQuery(opts)
+const { data, pending, error } = await useGetArticlesApi({ offset, favorited })
 </script>
 
 <template>

@@ -6,7 +6,7 @@ definePageMeta({
   middleware: 'auth',
 })
 
-const user = useCurrentUser()
+const user = useAuthUser()
 const isSubmitting = ref(false)
 const submitError = ref(null) as Ref<Error | null>
 const logout = useLogOut()

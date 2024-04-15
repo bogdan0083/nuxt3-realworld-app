@@ -7,25 +7,21 @@ definePageMeta({
 
 const router = useRouter()
 const route = useRoute()
-const isFeed = computed(() => route.path === '/feed')
-const user = useCurrentUser()
+const feed = computed(() => route.path === '/feed')
+const user = useAuthUser()
 
 if (import.meta.client && route.path === '/signin/callback')
   router.push('/')
 
-if (isFeed.value && !user.value)
+if (feed.value && !user.value)
   navigateTo('/')
 
 const currentPage = computed(() => Number.parseInt(route.query.page as string) || 1)
+const tag = computed(() => route.query.tag as string)
+const offset = computed(() => (currentPage.value - 1) * ARTICLES_PER_PAGE)
 
-const opts = computed(() => ({
-  tag: route.query.tag as string,
-  offset: (currentPage.value - 1) * ARTICLES_PER_PAGE,
-  feed: isFeed.value,
-}))
-
-const { data, pending, error } = await useArticlesQuery(opts)
-const { data: tagsData } = await useTagsQuery()
+const { data, pending, error } = await useGetArticlesApi({ tag, offset, feed })
+const { data: tagsData } = await useGetTagsApi()
 </script>
 
 <template>
@@ -38,7 +34,7 @@ const { data: tagsData } = await useTagsQuery()
             <ul class="nav nav-pills outline-active">
               <li v-if="user" class="nav-item">
                 <a
-                  class="nav-link" href="/feed" :class="{ active: isFeed }"
+                  class="nav-link" href="/feed" :class="{ active: feed }"
                   @click.prevent="$router.replace({ path: '/feed', force: true, query: { ...route.query, tag: undefined } })"
                 >
                   Your feed
@@ -46,7 +42,7 @@ const { data: tagsData } = await useTagsQuery()
               </li>
               <li class="nav-item">
                 <a
-                  class="nav-link" href="#" :class="{ active: !route.query.tag && !isFeed }"
+                  class="nav-link" href="#" :class="{ active: !route.query.tag && !feed }"
                   @click.prevent="$router.replace({ path: '/', force: true, query: { ...route.query, tag: undefined } })"
                 >Global
                   Feed</a>

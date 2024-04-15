@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Article } from '~/lib/api/__generated__'
-import { apiFetch } from '~/lib/api/apiFetch'
 import { ARTICLES_PER_PAGE } from '~/lib/constants'
 
 const props = defineProps<{
@@ -8,40 +7,26 @@ const props = defineProps<{
   articlesCount: number
 }>()
 
-const ITEMS_PER_PAGE = 10
 const router = useRouter()
 const route = useRoute()
-const user = useCurrentUser()
+const user = useAuthUser()
 const currentPage = computed(() => Number.parseInt(route.query.page as string) || 1)
-// @TODO think how to properly abstract this
+const favoritedArticle = ref<Article>()
+const { execute: favoriteArticle } = useFavoriteArticleApi({ article: favoritedArticle as Ref<Article> })
+
 async function onFavoriteClick(slug: string) {
   if (!user.value) {
     router.push('/login')
   }
   else {
-    const article = props.articles.find(a => a.slug === slug)
-
-    if (article) {
-      const originalFavorited = article.favorited
-      article.favorited = !article.favorited
-      article.favoritesCount += article.favorited ? 1 : -1
-      try {
-        await apiFetch(`/articles/${slug}/favorite`, {
-          method: originalFavorited ? 'DELETE' : 'POST',
-          body: { slug: article.slug },
-        })
-      }
-      catch (e) {
-        console.error('error', e)
-        article.favorited = !article.favorited
-        article.favoritesCount += article.favorited ? 1 : -1
-      }
-    }
+    const article = props.articles.find(a => a.slug === slug) as Article
+    favoritedArticle.value = article
+    await favoriteArticle()
   }
 }
 
 // generate pages array based on total pages and items per page
-const pages = computed(() => Array.from({ length: Math.ceil((props.articlesCount || 0) / ITEMS_PER_PAGE) }, (_, i) => i + 1))
+const pages = computed(() => Array.from({ length: Math.ceil((props.articlesCount || 0) / ARTICLES_PER_PAGE) }, (_, i) => i + 1))
 </script>
 
 <template>

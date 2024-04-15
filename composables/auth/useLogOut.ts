@@ -1,5 +1,5 @@
 export function useLogOut() {
-  const user = useCurrentUser()
+  const user = useAuthUser()
   const tokenCookie = useCookie('token')
   const logout = async () => {
     await navigateTo('/')

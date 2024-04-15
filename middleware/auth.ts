@@ -1,7 +1,7 @@
 import type { RouteLocationNormalized } from 'vue-router'
 
 export default function defineNuxtRouteMiddleware(_to: RouteLocationNormalized) {
-  const user = useCurrentUser()
+  const user = useAuthUser()
 
   if (!user.value && _to.path !== '/login' && _to.path !== '/register')
     return navigateTo('/login')

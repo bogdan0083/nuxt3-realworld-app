@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { NuxtError } from '#app'
-import type { CreateArticle201Response, GetArticleRequest, GetArticlesFeed200Response } from '~/lib/api/__generated__'
+import type { Article, CreateArticle201Response, GetArticleRequest, GetArticlesFeed200Response, NewArticle } from '~/lib/api/__generated__'
 import { apiFetch } from '~/lib/api/apiFetch'
 import type { NuxtErrorWithRecord } from '~/lib/types'
 
@@ -8,7 +8,8 @@ definePageMeta({
   middleware: 'auth',
 })
 
-const { params: { slug } } = useRoute()
+const { params } = useRoute()
+const slug = params.slug as string | undefined
 const articleTitle = ref('')
 const articleDescription = ref('')
 const articleBody = ref('')
@@ -16,15 +17,16 @@ const articleTag = ref('')
 const articleTagInputRef = ref(null) as Ref<HTMLInputElement | null>
 const isTagInputFocused = ref(false)
 const appliedTags = ref([]) as Ref<string[]>
-const publishError = ref(undefined) as Ref<NuxtErrorWithRecord | undefined>
-const isPublishing = ref(false)
+const articleToCreateOrUpdate = ref(undefined) as Ref<NewArticle | undefined>
 
-const { data, error, status } = await useLazyAsyncData<GetArticleRequest, NuxtErrorWithRecord, CreateArticle201Response>(
-  () => apiFetch(`/articles/${slug}`),
-  { immediate: !!slug },
-)
-
+const { data, error, status } = await useArticleApi({ slug })
+const { data: createArticleData, status: createArticleStatus, execute: createArticle, error: createArticleError } = await useCreateArticleApi({ article: articleToCreateOrUpdate as Ref<NewArticle> })
+const { data: updateArticleData, status: updateArticleStatus, execute: updateArticle, error: updateArticleError } = await useUpdateArticleApi({ article: articleToCreateOrUpdate as Ref<NewArticle>, slug: slug as string })
 const isLoading = computed(() => status.value === 'pending')
+
+const createOrUpdateArticleData = computed(() => updateArticleData.value || createArticleData.value)
+const isCreatingOrUpdatingArticle = computed(() => createArticleStatus.value === 'pending' || updateArticleStatus.value === 'pending')
+const createOrUpdateArticleError = computed(() => createArticleError.value || updateArticleError.value)
 
 const onTagInputFocus = () => isTagInputFocused.value = true
 const onTagInputBlur = () => isTagInputFocused.value = false
@@ -61,6 +63,11 @@ watchEffect(() => {
   }
 })
 
+watchEffect(async () => {
+  if (createOrUpdateArticleData.value)
+    await navigateTo(`/article/${createOrUpdateArticleData.value?.article.slug}`)
+})
+
 async function onPublishArticle() {
   if (isTagInputFocused.value)
     return
@@ -72,20 +79,13 @@ async function onPublishArticle() {
     tagList: appliedTags.value,
   }
 
-  try {
-    isPublishing.value = true
-    const response = await apiFetch<CreateArticle201Response>(slug ? `/articles/${slug}` : '/articles', {
-      method: slug ? 'PUT' : 'POST',
-      body: { article },
-    })
-    await navigateTo(`/article/${response.article.slug}`)
-  }
-  catch (e) {
-    publishError.value = e as NuxtErrorWithRecord
-  }
-  finally {
-    isPublishing.value = false
-  }
+  articleToCreateOrUpdate.value = article
+  await nextTick()
+
+  if (slug)
+    await updateArticle()
+  else
+    await createArticle()
 }
 </script>
 
@@ -94,8 +94,8 @@ async function onPublishArticle() {
     <div class="container page">
       <div class="row">
         <div class="col-md-10 offset-md-1 col-xs-12">
-          <ul v-if="publishError" class="error-messages">
-            <li v-for="(v, key) in publishError.data?.errors" :key="key">
+          <ul v-if="createOrUpdateArticleError" class="error-messages">
+            <li v-for="(v, key) in createOrUpdateArticleError.data?.errors" :key="key">
               {{ key }} {{ v.join(', ') }}
             </li>
           </ul>
@@ -137,8 +137,8 @@ async function onPublishArticle() {
                     @click="appliedTags.splice(appliedTags.indexOf(t), 1)"
                   />{{ t }}</span>
                 </div>
-              </fieldset><button class="btn btn-lg pull-xs-right btn-primary" type="submit" :disabled="isPublishing">
-                {{ isPublishing ? 'Publishing...' : 'Publish Article' }}
+              </fieldset><button class="btn btn-lg pull-xs-right btn-primary" type="submit" :disabled="isCreatingOrUpdatingArticle">
+                {{ isCreatingOrUpdatingArticle ? 'Publishing...' : 'Publish Article' }}
               </button>
             </fieldset>
           </form>

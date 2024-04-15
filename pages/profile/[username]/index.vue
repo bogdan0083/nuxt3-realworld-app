@@ -1,17 +1,15 @@
 <script setup lang="ts">
 import type { User } from '~/lib/api/__generated__'
-import { apiFetch } from '~/lib/api/apiFetch'
 import { ARTICLES_PER_PAGE } from '~/lib/constants'
 
 defineProps<{ user?: User }>()
 const route = useRoute()
 const currentPage = computed(() => Number.parseInt(route.query?.page as string) || 1)
-const opts = computed(() => ({
-  offset: (currentPage.value - 1) * ARTICLES_PER_PAGE,
-  author: route.params.username as string,
-}))
 
-const { data, pending, error } = await useArticlesQuery(opts)
+const offset = computed(() => (currentPage.value - 1) * ARTICLES_PER_PAGE)
+const author = computed(() => route.params.username as string)
+
+const { data, pending, error } = await useGetArticlesApi({ offset, author })
 </script>
 
 <template>

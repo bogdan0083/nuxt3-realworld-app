@@ -10,6 +10,7 @@ import { registerArticlesEndpoints } from '~/mocks/articles/endpoints'
 import { registerAuthEndpoints } from '~/mocks/auth/endpoints'
 import { registerTagsEndpoints } from '~/mocks/tags/endpoints'
 
+// @TODO: add tests to delete article
 describe('articles', async () => {
   registerArticlesEndpoints()
   registerTagsEndpoints()

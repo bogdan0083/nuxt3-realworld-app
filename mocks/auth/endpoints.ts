@@ -8,11 +8,8 @@ export function registerAuthEndpoints() {
     method: 'POST',
     handler: async (event) => {
       const body = await readBody<{ user: LoginUser }>(event)
-      if (!body.user.email) {
-        // console.log('throwing email error')
-        // console.log('body', body)
+      if (!body.user.email)
         throw createError({ status: 422, data: { errors: { email: ['can\'t be blank'] } } })
-      }
 
       if (!body.user.password)
         throw createError({ status: 422, data: { errors: { password: ['can\'t be blank'] } } })

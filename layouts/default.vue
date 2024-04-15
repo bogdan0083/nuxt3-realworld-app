@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const user = useCurrentUser()
+const user = useAuthUser()
 </script>
 
 <template>

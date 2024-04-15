@@ -18,12 +18,9 @@ const user = computed(() => ({
   password: password.value,
 }))
 
-const { data, error, execute, status } = await useAsyncData<LoginUser, NuxtErrorWithRecord, Login200Response>('create-user', () => {
-  return apiFetch('/users/login', {
-    method: 'POST',
-    body: { user: user.value },
-  })
-}, { immediate: false })
+const { data, error, execute: loginUser, status } = await useLoginUserApi({
+  user,
+})
 
 const isLoading = computed(() => status.value === 'pending')
 
@@ -40,7 +37,7 @@ watchEffect(() => {
 })
 async function onSubmit(e: Event) {
   e.preventDefault()
-  await execute()
+  await loginUser()
 }
 </script>
 
