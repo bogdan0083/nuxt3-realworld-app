@@ -14,7 +14,7 @@ For more information on how to this works with other frontends/backends, head ov
 
 Our Nuxt application acts as an intermediary between the client and an external API, forwarding requests from the client to the external API and then returning the responses back to the client. Basically it acts as a proxy and doesn't have any defined API endpoints.
 
-All API calls are (abstracted into composables)[composables/api/] to make working with server state clearer and more consistent.
+All API calls are [abstracted into composables](composables/api/) to make working with server state clearer and more consistent.
 
 ## Getting started
 
