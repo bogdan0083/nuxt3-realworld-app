@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { formatDate } from '@vueuse/core'
-import type { Article } from '~/lib/api/__generated__'
-import { apiFetch } from '~/lib/api/apiFetch'
+import type { Article, Profile } from '~/lib/api/__generated__'
 
 const router = useRouter()
 const route = useRoute()
@@ -13,6 +12,8 @@ const { data: articleData, error: articleError, pending: articlePending } = awai
 const { data: commentsData, error: commentsError, pending: commentsPending } = await useArticleCommentsApi({ slug })
 const computedComments = computed(() => commentsData.value?.comments)
 const { execute: createComment, status: createCommentStatus } = await useCreateArticleCommentApi({ articleSlug: slug, commentBody: comment, comments: computedComments })
+
+const { execute: followOrUnfollowUser } = await useFollowOrUnfollowUserApi({ profile: () => articleData.value?.article.author as Profile })
 
 const commentIdToDelete = ref<number | undefined>()
 const { execute: deleteComment, error: deleteCommentError } = await useDeleteArticleCommentApi({
@@ -59,23 +60,9 @@ watchEffect(() => {
     console.error('error', deleteCommentError.value)
 })
 
-// @TODO: abstract this into a reusable composable
 async function onFollowClick() {
-  if (articleData.value) {
-    const { article: { author: { following } } } = articleData.value
-    const encodedUsername = encodeURIComponent(articleData.value.article.author.username)
-
-    try {
-      const previousFollowing = following
-      articleData.value.article.author.following = !following
-      await apiFetch(`/profiles/${encodedUsername}/follow`, {
-        method: previousFollowing ? 'DELETE' : 'POST',
-      })
-    }
-    catch (error) {
-      articleData.value.article.author.following = !articleData.value.article.author.following
-    }
-  }
+  if (articleData.value)
+    await followOrUnfollowUser()
 }
 async function onFavoriteClick() {
   if (!user.value)
