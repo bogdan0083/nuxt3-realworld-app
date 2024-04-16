@@ -73,7 +73,7 @@ const { data: tagsData } = await useGetTagsApi()
               <a
                 v-for="t in tagsData.tags" :key="t" href="#" class="tag-pill tag-default"
                 @click="$router.replace({ query: { page: 1, tag: t } })"
-              >{{ tag }}</a>
+              >{{ t }}</a>
             </div>
           </div>
         </div>
