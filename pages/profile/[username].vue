@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { loadRouteLocation } from '#vue-router'
-import type { GetProfileByUsername200Response, GetProfileByUsernameRequest, Profile } from '~/lib/api/__generated__'
-import { apiFetch } from '~/lib/api/apiFetch'
-import type { NuxtErrorWithRecord } from '~/lib/types'
+import type { Profile } from '~/lib/api/__generated__'
 
 const user = useAuthUser()
 
