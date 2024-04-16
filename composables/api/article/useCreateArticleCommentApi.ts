@@ -21,7 +21,7 @@ export default function useCreateArticleCommentApi(opts: Options) {
         onResponse: ({ response }) => {
           if (isRef(opts.commentBody))
             opts.commentBody.value = ''
-          comments?.unshift?.(response._data.comment)
+          comments?.push?.(response._data.comment)
         },
         onRequestError: () => {
           comments = previousComments

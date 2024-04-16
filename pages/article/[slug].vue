@@ -7,6 +7,7 @@ const route = useRoute()
 const slug = route.params.slug as string
 const user = useAuthUser()
 const comment = ref('')
+const commentElements = ref<HTMLElement[]>([])
 
 const { data: articleData, error: articleError, pending: articlePending } = await useArticleApi({ slug })
 const { data: commentsData, error: commentsError, pending: commentsPending } = await useArticleCommentsApi({ slug })
@@ -58,6 +59,13 @@ watchEffect(() => {
     console.error('error', favoriteArticleError.value)
   if (deleteCommentError.value)
     console.error('error', deleteCommentError.value)
+})
+
+watchEffect(() => {
+  if (createCommentStatus.value === 'success' && commentElements.value.length > 0) {
+    const lastCommentElement = commentElements.value[commentElements.value.length - 1]
+    lastCommentElement.scrollIntoView({ behavior: 'smooth' })
+  }
 })
 
 async function onFollowClick() {
@@ -188,7 +196,7 @@ async function onDeleteArticle() {
             </div>
           </div>
           <template v-else-if="commentsData?.comments">
-            <div v-for="c in commentsData?.comments" :key="c.id" class="card">
+            <div v-for="c in commentsData?.comments" :key="c.id" ref="commentElements" class="card">
               <div class="card-block">
                 <p class="card-text">
                   {{ c.body }}
