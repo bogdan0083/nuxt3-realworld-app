@@ -12,9 +12,9 @@ For more information on how to this works with other frontends/backends, head ov
 
 ## How it works
 
-// @TODO
+Our Nuxt application acts as an intermediary between the client and an external API, forwarding requests from the client to the external API and then returning the responses back to the client. Basically it acts as a proxy and doesn't have any defined API endpoints.
 
-> Describe the general architecture of your app here
+All API calls are (abstracted into composables)[composables/api/] to make working with server state clearer and more consistent.
 
 ## Getting started
 
@@ -24,7 +24,4 @@ npm install && npm run setup-git-hooks && npm run dev
 
 ## TODOs
 
-- Refactor api calls into composables
-- Describe the general architecture of the app
 - Add a visual feedback to all errors
-- Add unit and e2e tests
