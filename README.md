@@ -22,6 +22,19 @@ All API calls are [abstracted into composables](composables/api/) to make workin
 npm install && npm run setup-git-hooks && npm run dev
 ```
 
+## Running tests
+
+To run tests for this application, you can use the test script in the package.json file:
+
+```
+npm run test
+```
+
+This command uses [Vitest](https://vitest.dev/) as the test runner.
+
+For mocking API responses during testing, the project uses [@nuxt/test-utils](https://github.com/nuxt/test-utils). This utility helps to set up the Nuxt context for each test and provides API mocking capabilities.
+
 ## TODOs
 
 - Add a visual feedback to all errors
+- Convert the app into a full-stack application by developing API endpoints instead of relying on the external API
