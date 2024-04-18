@@ -41,6 +41,6 @@ For mocking API responses during testing, the project uses [@nuxt/test-utils](ht
 
 ## Support
 
-If you find this project useful, you can give it a ⭐️! Star this project on GitHub to show your support and help others discover it.
+If you find this project useful, please give it a ⭐️! Show your support and help others discover it.
 
 Thanks! ❤️
