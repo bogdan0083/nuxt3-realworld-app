@@ -37,6 +37,7 @@ For mocking API responses during testing, the project uses [@nuxt/test-utils](ht
 ## TODOs
 
 - Add a visual feedback to all errors
+- Add client-side validation for forms
 - Convert the app into a full-stack application by developing API endpoints instead of relying on the external API
 
 ## Support
